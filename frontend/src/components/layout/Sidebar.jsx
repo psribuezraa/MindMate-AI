@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Sparkles,
   BarChart3,
@@ -7,6 +7,7 @@ import {
   HeartHandshake,
   Settings,
   LogOut,
+  Plus,
 } from 'lucide-react';
 
 const navItems = [
@@ -19,6 +20,7 @@ const navItems = [
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <aside className="sidebar" id="sidebar">
@@ -29,9 +31,19 @@ export default function Sidebar() {
         </div>
         <div>
           <h1>MindMate AI</h1>
-          <p>Digital Sanctuary</p>
+          <p>Your Digital Sanctuary</p>
         </div>
       </div>
+
+      {/* New Session Button */}
+      <button
+        className="sidebar-new-session"
+        id="new-session-btn"
+        onClick={() => navigate('/chat')}
+      >
+        <Plus size={18} />
+        <span>New Session</span>
+      </button>
 
       {/* Navigation */}
       <nav className="sidebar-nav">
