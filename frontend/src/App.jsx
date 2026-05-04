@@ -1,12 +1,17 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AppLayout from './components/layout/AppLayout';
-import SanctuaryPage from './pages/SanctuaryPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import MindfulnessPage from './pages/MindfulnessPage';
-import SoundscapesPage from './pages/SoundscapesPage';
-import SupportPage from './pages/SupportPage';
-import SettingsPage from './pages/SettingsPage';
-import ChatPage from './pages/ChatPage';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppLayout from "./components/layout/AppLayout";
+import SanctuaryPage from "./pages/SanctuaryPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import MindfulnessPage from "./pages/MindfulnessPage";
+import SoundscapesPage from "./pages/SoundscapesPage";
+import SupportPage from "./pages/SupportPage";
+import SettingsPage from "./pages/SettingsPage";
+import ChatPage from "./pages/ChatPage";
+
+// merge conflict dari achmad
+import SignInPage from "./pages/SignInPage";
+import SignUpPage from "./pages/SignUpPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 export default function App() {
   return (
