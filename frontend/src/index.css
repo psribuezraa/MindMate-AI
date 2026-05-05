@@ -1321,6 +1321,16 @@ body {
                     radial-gradient(circle at bottom left, var(--color-bg-blush-light) 0%, transparent 40%);
 }
 
+.auth-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
 .auth-card {
   width: 100%;
   max-width: 440px;
