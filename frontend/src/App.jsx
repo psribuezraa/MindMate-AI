@@ -8,7 +8,6 @@ import SupportPage from "./pages/SupportPage";
 import SettingsPage from "./pages/SettingsPage";
 import ChatPage from "./pages/ChatPage";
 
-// merge conflict dari achmad
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
@@ -17,6 +16,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={<SignInPage />} />
+        <Route path="/register" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route element={<AppLayout />}>
           <Route index element={<SanctuaryPage />} />
           <Route path="chat" element={<ChatPage />} />
