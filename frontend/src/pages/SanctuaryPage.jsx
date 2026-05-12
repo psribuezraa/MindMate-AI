@@ -1,4 +1,5 @@
 import { Search, Play, Wind } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import EmotionalResonanceChart from '../components/dashboard/EmotionalResonanceChart';
 import BreathingRing from '../components/dashboard/BreathingRing';
 import GuidedIntentionCard from '../components/dashboard/GuidedIntentionCard';
@@ -14,7 +15,8 @@ function getGreeting() {
 }
 
 export default function SanctuaryPage() {
-  const userName = 'Sarah'; // Will come from AuthContext later
+  const { user } = useAuth();
+  const userName = user?.name ? user.name.split(' ')[0] : 'Guest';
 
   return (
     <div id="sanctuary-page">

@@ -46,3 +46,6 @@ pnpm-debug.log*
 
 # PDF (project docs stored elsewhere)
 *.pdf
+
+# Sensitive test scripts
+backend/test-mongo.js
