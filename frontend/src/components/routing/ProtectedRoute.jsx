@@ -3,10 +3,10 @@ import { useAuth } from '../../context/AuthContext';
 
 /**
  * Wraps routes that require the user to be logged in.
- * If not authenticated → redirect to /login.
+ * If not authenticated → redirect to /.
  * If authenticated → render the child route normally.
  */
 export default function ProtectedRoute() {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
 }

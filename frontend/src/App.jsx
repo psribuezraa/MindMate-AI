@@ -15,13 +15,17 @@ import ChatPage from "./pages/ChatPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import LandingPage from "./pages/LandingPage";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public-only routes — redirect to / if already logged in */}
+          {/* Public Landing Page */}
+          <Route path="/" element={<LandingPage />} />
+
+          {/* Public-only routes — redirect to /dashboard if already logged in */}
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<SignInPage />} />
             <Route path="/register" element={<SignUpPage />} />
@@ -30,7 +34,7 @@ export default function App() {
 
           {/* Protected routes — redirect to /login if not logged in */}
           <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<AppLayout />}>
               <Route index element={<SanctuaryPage />} />
               <Route path="chat" element={<ChatPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
