@@ -5,6 +5,7 @@ import {
   Trees,
   Music,
   HeartHandshake,
+  BookOpen,
   Settings,
   LogOut,
   Plus,
@@ -13,10 +14,11 @@ import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
   { to: "/", label: "Sanctuary", icon: Sparkles },
+  { to: "/diary", label: "Diary History", icon: BookOpen },
   { to: "/analytics", label: "Analytics", icon: BarChart3 },
   { to: "/mindfulness", label: "Mindfulness", icon: Trees },
   { to: "/soundscapes", label: "Soundscapes", icon: Music },
-  { to: "/support", label: "Support", icon: HeartHandshake },
+  { to: "/support", label: "Local Support", icon: HeartHandshake },
 ];
 
 export default function Sidebar() {
