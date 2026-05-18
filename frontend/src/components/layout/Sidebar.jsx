@@ -5,6 +5,7 @@ import {
   Trees,
   Music,
   HeartHandshake,
+  BookOpen,
   Settings,
   LogOut,
   Plus,

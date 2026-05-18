@@ -11,6 +11,7 @@ import SoundscapesPage from "./pages/SoundscapesPage";
 import SupportPage from "./pages/SupportPage";
 import SettingsPage from "./pages/SettingsPage";
 import ChatPage from "./pages/ChatPage";
+import DiaryHistoryPage from "./pages/DiaryHistoryPage";
 
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/dashboard" element={<AppLayout />}>
               <Route index element={<SanctuaryPage />} />
               <Route path="chat" element={<ChatPage />} />
+              <Route path="diary" element={<DiaryHistoryPage />} />
               <Route path="analytics" element={<AnalyticsPage />} />
               <Route path="mindfulness" element={<MindfulnessPage />} />
               <Route path="soundscapes" element={<SoundscapesPage />} />

@@ -5,6 +5,7 @@ import BreathingRing from '../components/dashboard/BreathingRing';
 import GuidedIntentionCard from '../components/dashboard/GuidedIntentionCard';
 import SoundscapePlayer from '../components/dashboard/SoundscapePlayer';
 import ThoughtShredder from '../components/dashboard/ThoughtShredder';
+import DiaryCard from '../components/dashboard/DiaryCard';
 import LocalSupportCard from '../components/dashboard/LocalSupportCard';
 
 function getGreeting() {
@@ -65,7 +66,12 @@ export default function SanctuaryPage() {
           </div>
         </section>
 
-        {/* Row 3: Thought Shredder (spans 2 columns) */}
+        {/* Row 3: Daily Diary (spans 2 columns) */}
+        <div style={{ gridColumn: 'span 2' }}>
+          <DiaryCard />
+        </div>
+
+        {/* Row 4: Thought Shredder (spans 2 columns) */}
         <div style={{ gridColumn: 'span 2' }}>
           <ThoughtShredder />
         </div>
