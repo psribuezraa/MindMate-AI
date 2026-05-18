@@ -16,13 +16,17 @@ import DiaryHistoryPage from "./pages/DiaryHistoryPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import LandingPage from "./pages/LandingPage";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public-only routes — redirect to / if already logged in */}
+          {/* Public Landing Page */}
+          <Route path="/" element={<LandingPage />} />
+
+          {/* Public-only routes — redirect to /dashboard if already logged in */}
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<SignInPage />} />
             <Route path="/register" element={<SignUpPage />} />

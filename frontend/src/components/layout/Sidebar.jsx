@@ -58,7 +58,7 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `sidebar-nav-item ${isActive ? "active" : ""}`
             }
-            end={item.to === "/"}
+            end={item.to === "/dashboard"}
           >
             <item.icon size={20} />
             <span>{item.label}</span>
