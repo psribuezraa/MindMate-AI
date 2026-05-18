@@ -42,7 +42,7 @@ export default function SignUpPage() {
 
       // Auto-login after successful registration
       login(data);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError('Unable to connect to server. Please try again.');
     } finally {

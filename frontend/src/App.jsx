@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/routing/ProtectedRoute";
 import PublicRoute from "./components/routing/PublicRoute";
@@ -31,7 +31,8 @@ export default function App() {
 
           {/* Protected routes — redirect to /login if not logged in */}
           <Route element={<ProtectedRoute />}>
-            <Route element={<AppLayout />}>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<AppLayout />}>
               <Route index element={<SanctuaryPage />} />
               <Route path="chat" element={<ChatPage />} />
               <Route path="diary" element={<DiaryHistoryPage />} />

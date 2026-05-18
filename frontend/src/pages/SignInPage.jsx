@@ -34,7 +34,7 @@ export default function SignInPage() {
 
       // Save to context + localStorage, then go to dashboard
       login(data);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError('Unable to connect to server. Please try again.');
     } finally {
