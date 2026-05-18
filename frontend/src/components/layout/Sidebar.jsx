@@ -13,12 +13,11 @@ import {
 import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
-  { to: "/", label: "Sanctuary", icon: Sparkles },
-  { to: "/diary", label: "Diary History", icon: BookOpen },
-  { to: "/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/mindfulness", label: "Mindfulness", icon: Trees },
-  { to: "/soundscapes", label: "Soundscapes", icon: Music },
-  { to: "/support", label: "Local Support", icon: HeartHandshake },
+  { to: "/dashboard", label: "Sanctuary", icon: Sparkles },
+  { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/dashboard/mindfulness", label: "Mindfulness", icon: Trees },
+  { to: "/dashboard/soundscapes", label: "Soundscapes", icon: Music },
+  { to: "/dashboard/support", label: "Support", icon: HeartHandshake },
 ];
 
 export default function Sidebar() {
@@ -43,7 +42,7 @@ export default function Sidebar() {
       <button
         className="sidebar-new-session"
         id="new-session-btn"
-        onClick={() => navigate("/chat")}
+        onClick={() => navigate("/dashboard/chat")}
       >
         <Plus size={18} />
         <span>New Session</span>
@@ -58,7 +57,7 @@ export default function Sidebar() {
             className={({ isActive }) =>
               `sidebar-nav-item ${isActive ? "active" : ""}`
             }
-            end={item.to === "/"}
+            end={item.to === "/dashboard"}
           >
             <item.icon size={20} />
             <span>{item.label}</span>
@@ -69,7 +68,7 @@ export default function Sidebar() {
       {/* Bottom */}
       <div className="sidebar-bottom">
         <NavLink
-          to="/settings"
+          to="/dashboard/settings"
           className={({ isActive }) =>
             `sidebar-nav-item ${isActive ? "active" : ""}`
           }
