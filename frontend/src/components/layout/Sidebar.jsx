@@ -15,10 +15,11 @@ import { useAuth } from "../../context/AuthContext";
 const navItems = [
   { to: "/dashboard", label: "Sanctuary", icon: Sparkles },
   { to: "/dashboard/diary", label: "Diary History", icon: BookOpen },
-  { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
-  { to: "/dashboard/mindfulness", label: "Mindfulness", icon: Trees },
-  { to: "/dashboard/soundscapes", label: "Soundscapes", icon: Music },
   { to: "/dashboard/support", label: "Local Support", icon: HeartHandshake },
+  // HIDDEN FOR MVP:
+  // { to: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+  // { to: "/dashboard/mindfulness", label: "Mindfulness", icon: Trees },
+  // { to: "/dashboard/soundscapes", label: "Soundscapes", icon: Music },
 ];
 
 export default function Sidebar() {
@@ -68,6 +69,7 @@ export default function Sidebar() {
 
       {/* Bottom */}
       <div className="sidebar-bottom">
+        {/* HIDDEN FOR MVP:
         <NavLink
           to="/dashboard/settings"
           className={({ isActive }) =>
@@ -77,6 +79,7 @@ export default function Sidebar() {
           <Settings size={20} />
           <span>Settings</span>
         </NavLink>
+        */}
         <button className="sidebar-nav-item" id="logout-btn" onClick={logout}>
           <LogOut size={20} />
           <span>Log out</span>

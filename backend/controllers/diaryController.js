@@ -70,4 +70,63 @@ const deleteEntry = async (req, res) => {
   }
 };
 
-module.exports = { createEntry, getEntries, deleteEntry };
+/**
+ * @route   GET /api/diary/mood-summary
+ * @desc    Get mood data for the last 30 days (averaged per day)
+ * @access  Private
+ */
+
+// Mood → numerical value (mirrors the frontend mapping)
+const MOOD_VALUES = {
+  Angry: 1,
+  Sad: 1,
+  Anxious: 2,
+  Neutral: 2,
+  Calm: 3,
+  Happy: 3,
+};
+
+const getMoodSummary = async (req, res) => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    thirtyDaysAgo.setHours(0, 0, 0, 0);
+
+    // Fetch only mood + date for the last 30 days
+    const entries = await Diary.find({
+      user: req.user._id,
+      createdAt: { $gte: thirtyDaysAgo },
+    })
+      .select("mood createdAt")
+      .sort({ createdAt: 1 }); // oldest first
+
+    // Group entries by calendar day and accumulate values
+    const dayMap = new Map(); // "YYYY-MM-DD" → { total, count }
+
+    for (const entry of entries) {
+      const dayKey = entry.createdAt.toISOString().slice(0, 10);
+      const moodValue = MOOD_VALUES[entry.mood] ?? 2; // default Balanced
+
+      if (!dayMap.has(dayKey)) {
+        dayMap.set(dayKey, { total: 0, count: 0 });
+      }
+      const day = dayMap.get(dayKey);
+      day.total += moodValue;
+      day.count += 1;
+    }
+
+    // Build summary with averaged value per day, oldest-first
+    const summary = [];
+    for (const [date, { total, count }] of dayMap.entries()) {
+      const averageValue = Math.round((total / count) * 100) / 100;
+      summary.push({ date, averageValue });
+    }
+
+    res.json(summary);
+  } catch (error) {
+    console.error("Get mood summary error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { createEntry, getEntries, deleteEntry, getMoodSummary };

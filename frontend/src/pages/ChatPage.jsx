@@ -1,5 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { MessageCircle, Mic, Send } from 'lucide-react';
+import { MessageCircle, Mic, Send, Loader } from 'lucide-react';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const QUICK_PROMPTS = [
   "I'm anxious",
@@ -15,9 +19,11 @@ const INITIAL_MESSAGE = {
 };
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
+  const { token } = useAuth();
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -30,19 +36,44 @@ export default function ChatPage() {
     scrollToBottom();
   }, [messages, isTyping, scrollToBottom]);
 
-  /* Focus input on mount */
+  /* Fetch chat history on mount */
   useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+    const fetchHistory = async () => {
+      try {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const res = await axios.get(`${API_URL}/api/chat`, config);
+        
+        if (res.data && res.data.length > 0) {
+          // Map backend _id to id for React keys
+          const mappedHistory = res.data.map(m => ({ ...m, id: m._id }));
+          setMessages(mappedHistory);
+        } else {
+          setMessages([INITIAL_MESSAGE]);
+        }
+      } catch (err) {
+        console.error('Failed to load chat history', err);
+        setMessages([INITIAL_MESSAGE]);
+      } finally {
+        setIsLoading(false);
+        // Focus input after loading
+        setTimeout(() => inputRef.current?.focus(), 100);
+      }
+    };
+
+    if (token) {
+      fetchHistory();
+    }
+  }, [token]);
 
   /* ── Send a message ── */
   const sendMessage = useCallback(
-    (text) => {
+    async (text) => {
       const trimmed = (text || input).trim();
       if (!trimmed) return;
 
+      const tempId = Date.now().toString();
       const userMsg = {
-        id: Date.now().toString(),
+        id: tempId,
         role: 'user',
         content: trimmed,
       };
@@ -51,18 +82,29 @@ export default function ChatPage() {
       setInput('');
       setIsTyping(true);
 
-      // Simulate AI response (will be replaced with real API call later)
-      setTimeout(() => {
-        const aiMsg = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: getPlaceholderResponse(trimmed),
-        };
-        setMessages((prev) => [...prev, aiMsg]);
+      try {
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const res = await axios.post(`${API_URL}/api/chat`, { content: trimmed }, config);
+        
+        // Update messages with the real IDs from the backend and the AI's response
+        setMessages((prev) => {
+          // Replace temp user message with real one
+          const updated = prev.map(m => m.id === tempId ? { ...res.data.userMessage, id: res.data.userMessage._id } : m);
+          // Append AI message
+          return [...updated, { ...res.data.aiMessage, id: res.data.aiMessage._id }];
+        });
+      } catch (err) {
+        console.error('Failed to send message', err);
+        // Add an error message
+        setMessages((prev) => [
+          ...prev, 
+          { id: Date.now().toString(), role: 'assistant', content: 'I am having trouble connecting right now. Please try again in a moment.' }
+        ]);
+      } finally {
         setIsTyping(false);
-      }, 1200 + Math.random() * 800);
+      }
     },
-    [input],
+    [input, token],
   );
 
   const handleSubmit = (e) => {
@@ -82,7 +124,15 @@ export default function ChatPage() {
   };
 
   /* ── Only show quick-prompt chips when there is one message (the welcome) ── */
-  const showQuickPrompts = messages.length === 1;
+  const showQuickPrompts = messages.length === 1 && messages[0].id === 'welcome';
+
+  if (isLoading) {
+    return (
+      <div className="chat-page" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Loader className="spin" size={32} color="var(--color-accent-sage)" />
+      </div>
+    );
+  }
 
   return (
     <div className="chat-page" id="chat-page">
@@ -192,29 +242,4 @@ export default function ChatPage() {
   );
 }
 
-/* ─────────────────────────────────────────────
-   Placeholder responses (will be replaced by real AI API)
-   ───────────────────────────────────────────── */
-function getPlaceholderResponse(userText) {
-  const lower = userText.toLowerCase();
 
-  if (lower.includes('anxious') || lower.includes('anxiety') || lower.includes('worried'))
-    return "I hear you — anxiety can feel overwhelming. Let's try a grounding exercise. Can you name 5 things you can see around you right now?";
-
-  if (lower.includes('vent') || lower.includes('frustrated') || lower.includes('angry'))
-    return "I'm here to listen. Go ahead and share whatever is weighing on you. There's no judgement here, only understanding.";
-
-  if (lower.includes('checking in') || lower.includes('okay') || lower.includes('fine'))
-    return "That's great that you're checking in with yourself. Even small moments of self-reflection matter. How has your energy been today?";
-
-  if (lower.includes('sad') || lower.includes('depressed') || lower.includes('down'))
-    return "I'm sorry you're feeling this way. It takes courage to acknowledge these feelings. Would you like to talk about what's been bringing you down?";
-
-  if (lower.includes('stress') || lower.includes('overwhelm') || lower.includes('busy'))
-    return "It sounds like a lot is on your plate right now. Let's take a step back together. What feels most pressing to you at this moment?";
-
-  if (lower.includes('sleep') || lower.includes('tired') || lower.includes('exhausted'))
-    return "Rest is so important for your mental well-being. Have you been able to wind down before bed? I can suggest a calming breathing exercise if you'd like.";
-
-  return "Thank you for sharing that with me. I want to make sure I understand — could you tell me a bit more about how that makes you feel?";
-}
