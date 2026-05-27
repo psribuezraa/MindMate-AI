@@ -8,6 +8,8 @@ import ThoughtShredder from '../components/dashboard/ThoughtShredder';
 import DiaryCard from '../components/dashboard/DiaryCard';
 import LocalSupportCard from '../components/dashboard/LocalSupportCard';
 
+import { useState } from 'react';
+
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour < 12) return 'Good morning';
@@ -18,6 +20,7 @@ function getGreeting() {
 export default function SanctuaryPage() {
   const { user } = useAuth();
   const userName = user?.name ? user.name.split(' ')[0] : 'Guest';
+  const [diaryUpdateTrigger, setDiaryUpdateTrigger] = useState(0);
 
   return (
     <div id="sanctuary-page">
@@ -36,7 +39,7 @@ export default function SanctuaryPage() {
       {/* Dashboard Grid — 3-column top row */}
       <div className="dashboard-grid">
         {/* Row 1 spans full width: Chart + Pace + Right sidebar */}
-        <EmotionalResonanceChart />
+        <EmotionalResonanceChart updateTrigger={diaryUpdateTrigger} />
         <BreathingRing />
         <div className="dashboard-sidebar-right">
           <SoundscapePlayer />
@@ -68,7 +71,7 @@ export default function SanctuaryPage() {
 
         {/* Row 3: Daily Diary (spans 2 columns) */}
         <div style={{ gridColumn: 'span 2' }}>
-          <DiaryCard />
+          <DiaryCard onDiarySaved={() => setDiaryUpdateTrigger(prev => prev + 1)} />
         </div>
 
         {/* Row 4: Thought Shredder (spans 2 columns) */}

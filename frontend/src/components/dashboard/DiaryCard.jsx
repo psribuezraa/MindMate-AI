@@ -11,7 +11,7 @@ const MOOD_OPTIONS = [
   { value: 'Angry', emoji: '😤' },
 ];
 
-export default function DiaryCard() {
+export default function DiaryCard({ onDiarySaved }) {
   const [content, setContent] = useState('');
   const [mood, setMood] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -38,9 +38,11 @@ export default function DiaryCard() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || 'Failed to save entry');
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to save diary entry');
       }
+
+      if (onDiarySaved) onDiarySaved();
 
       // Success feedback
       setSaved(true);

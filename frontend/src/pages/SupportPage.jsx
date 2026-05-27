@@ -254,7 +254,7 @@ export default function SupportPage() {
         );
         setIsLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 3000, maximumAge: 60000 }
     );
   }, []);
 

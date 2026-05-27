@@ -50,3 +50,4 @@ pnpm-debug.log*
 # Sensitive test scripts
 backend/test-mongo.js
 backend/scratch/
+cc/

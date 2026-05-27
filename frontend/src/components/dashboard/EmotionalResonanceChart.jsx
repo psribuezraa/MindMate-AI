@@ -99,7 +99,7 @@ function CustomTooltip({ active, payload }) {
   );
 }
 
-export default function EmotionalResonanceChart() {
+export default function EmotionalResonanceChart({ updateTrigger }) {
   const [moodSummary, setMoodSummary] = useState(null); // null = loading
   const [error, setError] = useState(null);
 
@@ -130,7 +130,7 @@ export default function EmotionalResonanceChart() {
     };
 
     fetchMoodSummary();
-  }, []);
+  }, [updateTrigger]);
 
   const data = useMemo(
     () => (moodSummary !== null ? buildChartData(moodSummary) : []),

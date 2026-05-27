@@ -8,7 +8,7 @@ const callOpenRouter = async (messages) => {
   }
 
   // Using a free, fast model for the MVP. You can change this to "google/gemini-flash-1.5" or others later.
-  const model = "google/gemma-7b-it:free"; 
+  const model = "meta-llama/llama-3-8b-instruct:free"; 
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
