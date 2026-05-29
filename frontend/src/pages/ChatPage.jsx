@@ -19,7 +19,8 @@ const INITIAL_MESSAGE = {
 };
 
 export default function ChatPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
+  const token = user?.token;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -40,7 +41,7 @@ export default function ChatPage() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const config = { headers: { Authorization: `Bearer ${token}` } };
+        const config = { headers: { Authorization: `Bearer ${token}` }, timeout: 10000 };
         const res = await axios.get(`${API_URL}/api/chat`, config);
         
         if (res.data && res.data.length > 0) {
@@ -51,6 +52,10 @@ export default function ChatPage() {
           setMessages([INITIAL_MESSAGE]);
         }
       } catch (err) {
+        if (err.response?.status === 401) {
+          window.dispatchEvent(new Event('auth:session-expired'));
+          return;
+        }
         console.error('Failed to load chat history', err);
         setMessages([INITIAL_MESSAGE]);
       } finally {
@@ -94,6 +99,10 @@ export default function ChatPage() {
           return [...updated, { ...res.data.aiMessage, id: res.data.aiMessage._id }];
         });
       } catch (err) {
+        if (err.response?.status === 401) {
+          window.dispatchEvent(new Event('auth:session-expired'));
+          return;
+        }
         console.error('Failed to send message', err);
         // Add an error message
         setMessages((prev) => [

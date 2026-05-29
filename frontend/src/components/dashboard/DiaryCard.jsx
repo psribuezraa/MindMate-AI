@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { BookOpen, Save, Check } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { authFetch } from '../../services/authFetch';
 
 const MOOD_OPTIONS = [
   { value: 'Happy', emoji: '😊' },
@@ -28,7 +29,7 @@ export default function DiaryCard({ onDiarySaved }) {
     try {
       const token = localStorage.getItem('token');
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${API_URL}/api/diary`, {
+      const res = await authFetch(`${API_URL}/api/diary`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

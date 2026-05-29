@@ -9,6 +9,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { MoreHorizontal, BookOpen } from 'lucide-react';
+import { authFetch } from '../../services/authFetch';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -114,7 +115,7 @@ export default function EmotionalResonanceChart({ updateTrigger }) {
           return;
         }
 
-        const res = await fetch(`${API_URL}/api/diary/mood-summary`, {
+        const res = await authFetch(`${API_URL}/api/diary/mood-summary`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

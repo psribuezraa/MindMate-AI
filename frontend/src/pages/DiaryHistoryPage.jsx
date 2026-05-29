@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BookOpen, Trash2, Calendar, Loader } from 'lucide-react';
+import { authFetch } from '../services/authFetch';
 
 const MOOD_EMOJIS = {
   Happy: '😊',
@@ -23,8 +24,9 @@ export default function DiaryHistoryPage() {
   const fetchEntries = async () => {
     try {
       const token = localStorage.getItem('token');
+      
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${API_URL}/api/diary`, {
+      const res = await authFetch(`${API_URL}/api/diary`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -45,8 +47,9 @@ export default function DiaryHistoryPage() {
     setDeletingId(id);
     try {
       const token = localStorage.getItem('token');
+      
       const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${API_URL}/api/diary/${id}`, {
+      const res = await authFetch(`${API_URL}/api/diary/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

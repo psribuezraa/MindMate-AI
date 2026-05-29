@@ -1,21 +1,18 @@
 const Message = require("../models/Message");
 
-// Helper function to call OpenRouter
-const callOpenRouter = async (messages) => {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+// Helper function to call Google AI Studio (Gemini)
+const callGoogleAI = async (messages) => {
+  const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
-    throw new Error("OPENROUTER_API_KEY is missing from .env");
+    throw new Error("GOOGLE_API_KEY is missing from .env");
   }
 
-  // Using a free, fast model for the MVP. You can change this to "google/gemini-flash-1.5" or others later.
-  const model = "meta-llama/llama-3-8b-instruct:free"; 
+  const model = "gemini-2.5-flash"; // Free, fast Gemini model
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
-      "HTTP-Referer": "http://localhost:5173", // Optional, for OpenRouter rankings
-      "X-Title": "MindMate AI", // Optional, for OpenRouter rankings
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
@@ -26,8 +23,8 @@ const callOpenRouter = async (messages) => {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("OpenRouter API Error:", errorText);
-    throw new Error(`OpenRouter API responded with status ${response.status}`);
+    console.error("Google AI Studio Error:", errorText);
+    throw new Error(`Google AI Studio API responded with status ${response.status}`);
   }
 
   const data = await response.json();
@@ -78,7 +75,7 @@ const sendMessage = async (req, res) => {
     // Reverse them back to chronological order for the API
     recentMessages.reverse();
 
-    // 3. Format messages for OpenRouter API
+    // 3. Format messages for Google AI Studio (Gemini) API
     const systemPrompt = {
       role: "system",
       content: "You are MindMate AI, an empathetic, non-judgmental, and supportive digital mental health companion. Your goal is to listen, validate feelings, and gently guide users towards calmness using simple grounding techniques when they are anxious or overwhelmed. Keep your responses relatively concise (1-3 short paragraphs maximum). Ask open-ended questions to encourage them to share. Do not diagnose medical conditions."
@@ -92,8 +89,8 @@ const sendMessage = async (req, res) => {
       }))
     ];
 
-    // 4. Call OpenRouter
-    const aiResponseText = await callOpenRouter(apiMessages);
+    // 4. Call Google AI Studio (Gemini)
+    const aiResponseText = await callGoogleAI(apiMessages);
 
     // 5. Save AI's response to DB
     const aiMessage = new Message({
