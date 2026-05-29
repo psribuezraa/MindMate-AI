@@ -710,6 +710,76 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
+.soundscape-progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+}
+
+.soundscape-time {
+  font-size: 11px;
+  opacity: 0.65;
+  min-width: 30px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.soundscape-progress {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+  cursor: pointer;
+  transition: height var(--transition-fast);
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.85) var(--progress, 0%),
+    rgba(255, 255, 255, 0.2) var(--progress, 0%)
+  );
+}
+
+.soundscape-progress:hover {
+  height: 5px;
+}
+
+.soundscape-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  transition: transform var(--transition-fast);
+}
+
+.soundscape-progress:hover::-webkit-slider-thumb {
+  transform: scale(1.3);
+}
+
+.soundscape-progress::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+
+.soundscape-progress::-moz-range-track {
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
 /* ============================================
    THOUGHT SHREDDER
    ============================================ */
