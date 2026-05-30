@@ -19,6 +19,30 @@ export function AuthProvider({ children }) {
 
   const [sessionExpired, setSessionExpired] = useState(false);
 
+  // Auto-sync user data from backend on initial load to prevent stale localStorage
+  useEffect(() => {
+    const syncUser = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+          const res = await fetch(`${API_URL}/api/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const freshUser = await res.json();
+            freshUser.token = token; // Preserve token
+            localStorage.setItem('user', JSON.stringify(freshUser));
+            setUser(freshUser);
+          }
+        } catch (e) {
+          console.error("Failed to sync user", e);
+        }
+      }
+    };
+    syncUser();
+  }, []);
+
   /**
    * Call this after a successful /api/auth/login or /api/auth/register response.
    * Expects the full response object: { _id, name, email, token }
