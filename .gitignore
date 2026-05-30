@@ -51,3 +51,4 @@ pnpm-debug.log*
 backend/test-mongo.js
 backend/scratch/
 cc/
+mindmate-api/

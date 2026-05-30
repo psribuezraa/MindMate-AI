@@ -148,6 +148,12 @@ export default function OnboardingPage() {
       const data = await res.json();
 
       if (!res.ok) {
+        // Jika backend merespons bahwa survey sudah pernah diisi, langsung anggap sukses dan arahkan ke dashboard.
+        if (data.message === 'Survey already completed') {
+          markSurveyComplete();
+          navigate('/dashboard', { replace: true });
+          return;
+        }
         setError(data.message || 'Failed to submit survey.');
         return;
       }
