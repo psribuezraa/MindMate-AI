@@ -51,6 +51,7 @@ const register = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      hasCompletedSurvey: false, // New users always start with false
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -90,6 +91,7 @@ const login = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      hasCompletedSurvey: user.hasCompletedSurvey || false,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -109,6 +111,7 @@ const getMe = async (req, res) => {
     _id: req.user._id,
     name: req.user.name,
     email: req.user.email,
+    hasCompletedSurvey: req.user.hasCompletedSurvey || false,
     createdAt: req.user.createdAt,
   });
 };

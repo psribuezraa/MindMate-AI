@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    hasCompletedSurvey: {
+      type: Boolean,
+      default: false,
+    },
     // Add other fields later if needed (e.g., resetPasswordToken, streak count)
     // resetPasswordToken: {
     //   type: String,

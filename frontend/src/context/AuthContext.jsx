@@ -31,6 +31,18 @@ export function AuthProvider({ children }) {
   };
 
   /**
+   * Call this after the user completes the onboarding survey.
+   * Updates the local user object so ProtectedRoute stops redirecting.
+   */
+  const markSurveyComplete = () => {
+    setUser((prev) => {
+      const updated = { ...prev, hasCompletedSurvey: true };
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  /**
    * Call this from the Sidebar logout button.
    * Clears all auth data and redirects to /login.
    */
@@ -72,8 +84,10 @@ export function AuthProvider({ children }) {
   const value = {
     user,
     isAuthenticated: !!user,
+    hasCompletedSurvey: user?.hasCompletedSurvey || false,
     login,
     logout,
+    markSurveyComplete,
   };
 
   return (

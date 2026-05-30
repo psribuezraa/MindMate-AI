@@ -1,4 +1,6 @@
 const Message = require("../models/Message");
+const Survey = require("../models/Survey");
+const { summarizeSurveyForAI } = require("./surveyController");
 
 // Helper function to call Google AI Studio (Gemini)
 const callGoogleAI = async (messages) => {
@@ -75,10 +77,20 @@ const sendMessage = async (req, res) => {
     // Reverse them back to chronological order for the API
     recentMessages.reverse();
 
-    // 3. Format messages for Google AI Studio (Gemini) API
+    // 3. Fetch user's survey data for personalization (Emotional Resonance)
+    const survey = await Survey.findOne({ user: req.user._id });
+    const surveyContext = summarizeSurveyForAI(survey);
+
+    // 4. Build dynamic system prompt with survey personalization
+    let systemContent = "You are MindMate AI, an empathetic, non-judgmental, and supportive digital mental health companion. Your goal is to listen, validate feelings, and gently guide users towards calmness using simple grounding techniques when they are anxious or overwhelmed. Keep your responses relatively concise (1-3 short paragraphs maximum). Ask open-ended questions to encourage them to share. Do not diagnose medical conditions.";
+
+    if (surveyContext) {
+      systemContent += `\n\nHere is important context about the user you are speaking with: ${surveyContext} Use this information to personalize your responses — be empathetic and tailor your tone and suggestions accordingly, but do not explicitly repeat this information back to the user unless they bring it up.`;
+    }
+
     const systemPrompt = {
       role: "system",
-      content: "You are MindMate AI, an empathetic, non-judgmental, and supportive digital mental health companion. Your goal is to listen, validate feelings, and gently guide users towards calmness using simple grounding techniques when they are anxious or overwhelmed. Keep your responses relatively concise (1-3 short paragraphs maximum). Ask open-ended questions to encourage them to share. Do not diagnose medical conditions."
+      content: systemContent,
     };
 
     const apiMessages = [
