@@ -40,7 +40,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const { markSurveyComplete } = useAuth();
+  const { markSurveyComplete, logout } = useAuth();
   const navigate = useNavigate();
 
   // Form state
@@ -423,7 +423,7 @@ export default function OnboardingPage() {
 
         {/* Navigation */}
         <div className="onboarding-nav">
-          {step > 0 && (
+          {step > 0 ? (
             <button
               type="button"
               className="onboarding-nav-btn secondary"
@@ -432,6 +432,19 @@ export default function OnboardingPage() {
             >
               <ChevronLeft size={18} />
               Back
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="onboarding-nav-btn secondary"
+              onClick={() => {
+                logout();
+                navigate('/');
+              }}
+              disabled={isSubmitting}
+            >
+              <ChevronLeft size={18} />
+              Cancel & Logout
             </button>
           )}
           <div style={{ flex: 1 }} />
