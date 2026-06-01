@@ -59,7 +59,9 @@ const deleteEntry = async (req, res) => {
 
     // Ensure the entry belongs to the authenticated user
     if (entry.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized to delete this entry" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this entry" });
     }
 
     await entry.deleteOne();

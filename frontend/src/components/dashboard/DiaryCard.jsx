@@ -1,38 +1,38 @@
-import { useState, useRef } from 'react';
-import { BookOpen, Save, Check } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { authFetch } from '../../services/authFetch';
+import { useState, useRef } from "react";
+import { BookOpen, Save, Check } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { authFetch } from "../../services/authFetch";
 
 const MOOD_OPTIONS = [
-  { value: 'Happy', emoji: '😊' },
-  { value: 'Calm', emoji: '😌' },
-  { value: 'Neutral', emoji: '😐' },
-  { value: 'Anxious', emoji: '😰' },
-  { value: 'Sad', emoji: '😢' },
-  { value: 'Angry', emoji: '😤' },
+  { value: "Happy", emoji: "😊" },
+  { value: "Calm", emoji: "😌" },
+  { value: "Neutral", emoji: "😐" },
+  { value: "Anxious", emoji: "😰" },
+  { value: "Sad", emoji: "😢" },
+  { value: "Angry", emoji: "😤" },
 ];
 
 export default function DiaryCard({ onDiarySaved }) {
-  const [content, setContent] = useState('');
-  const [mood, setMood] = useState('');
+  const [content, setContent] = useState("");
+  const [mood, setMood] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const textareaRef = useRef(null);
   const { user } = useAuth();
 
   const handleSave = async () => {
     if (!content.trim() || !mood) return;
     setIsSaving(true);
-    setError('');
+    setError("");
 
     try {
-      const token = localStorage.getItem('token');
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const token = localStorage.getItem("token");
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const res = await authFetch(`${API_URL}/api/diary`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ content: content.trim(), mood }),
@@ -40,7 +40,7 @@ export default function DiaryCard({ onDiarySaved }) {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.message || 'Failed to save diary entry');
+        throw new Error(errorData.message || "Failed to save diary entry");
       }
 
       if (onDiarySaved) onDiarySaved();
@@ -48,13 +48,13 @@ export default function DiaryCard({ onDiarySaved }) {
       // Success feedback
       setSaved(true);
       setTimeout(() => {
-        setContent('');
-        setMood('');
+        setContent("");
+        setMood("");
         setSaved(false);
         textareaRef.current?.focus();
       }, 1500);
     } catch (err) {
-      setError(err.message || 'Unable to connect to server.');
+      setError(err.message || "Unable to connect to server.");
     } finally {
       setIsSaving(false);
     }
@@ -87,7 +87,7 @@ export default function DiaryCard({ onDiarySaved }) {
             <button
               key={option.value}
               type="button"
-              className={`diary-mood-btn ${mood === option.value ? 'selected' : ''}`}
+              className={`diary-mood-btn ${mood === option.value ? "selected" : ""}`}
               onClick={() => setMood(option.value)}
               disabled={isSaving || saved}
               title={option.value}
@@ -106,11 +106,15 @@ export default function DiaryCard({ onDiarySaved }) {
         id="save-diary-btn"
       >
         {saved ? (
-          <>Entry Saved <Check size={16} /></>
+          <>
+            Entry Saved <Check size={16} />
+          </>
         ) : isSaving ? (
-          'Saving…'
+          "Saving…"
         ) : (
-          <>Save Entry <Save size={16} /></>
+          <>
+            Save Entry <Save size={16} />
+          </>
         )}
       </button>
     </div>

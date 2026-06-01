@@ -9,7 +9,7 @@ const callGoogleAI = async (messages) => {
     throw new Error("GOOGLE_API_KEY is missing from .env");
   }
 
-  const model = "gemini-2.5-flash"; // Free, fast Gemini model
+  const model = "gemma-2-9b-it"; // Using Google's open-weights Gemma model
 
   const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
     method: "POST",
