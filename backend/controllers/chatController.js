@@ -2,16 +2,16 @@ const Message = require("../models/Message");
 const Survey = require("../models/Survey");
 const { summarizeSurveyForAI } = require("./surveyController");
 
-// Helper function to call Google AI Studio (Gemini)
-const callGoogleAI = async (messages) => {
-  const apiKey = process.env.GOOGLE_API_KEY;
+// Helper function to call Groq API (Gemma 2)
+const callGroqAI = async (messages) => {
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    throw new Error("GOOGLE_API_KEY is missing from .env");
+    throw new Error("GROQ_API_KEY is missing from .env");
   }
 
-  const model = "gemma-2-9b-it"; // Using Google's open-weights Gemma model
+  const model = "llama-3.3-70b-versatile"; // Meta's state-of-the-art Llama 3.3 70B on Groq
 
-  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
+  const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${apiKey}`,
@@ -25,8 +25,8 @@ const callGoogleAI = async (messages) => {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error("Google AI Studio Error:", errorText);
-    throw new Error(`Google AI Studio API responded with status ${response.status}`);
+    console.error("Groq API Error:", errorText);
+    throw new Error(`Groq API responded with status ${response.status}`);
   }
 
   const data = await response.json();
@@ -82,7 +82,7 @@ const sendMessage = async (req, res) => {
     const surveyContext = summarizeSurveyForAI(survey);
 
     // 4. Build dynamic system prompt with survey personalization
-    let systemContent = "You are MindMate AI, an empathetic, non-judgmental, and supportive digital mental health companion. Your goal is to listen, validate feelings, and gently guide users towards calmness using simple grounding techniques when they are anxious or overwhelmed. Keep your responses relatively concise (1-3 short paragraphs maximum). Ask open-ended questions to encourage them to share. Do not diagnose medical conditions.";
+    let systemContent = "You are MindMate AI, an empathetic, non-judgmental, and supportive digital mental health companion. Your goal is to listen, validate feelings, and gently guide users towards calmness using simple grounding techniques when they are anxious or overwhelmed. Keep your responses relatively concise (1-3 short paragraphs maximum). Ask open-ended questions to encourage them to share. Do not diagnose medical conditions. CRITICAL RULE: You are strictly a mental health companion. If the user asks questions entirely unrelated to mental health, emotional well-being, psychology, or personal development (such as coding, IT, math, politics, or general trivia), you MUST politely decline to answer. Gently remind them of your purpose and redirect the conversation back to how they are feeling today.";
 
     if (surveyContext) {
       systemContent += `\n\nHere is important context about the user you are speaking with: ${surveyContext} Use this information to personalize your responses — be empathetic and tailor your tone and suggestions accordingly, but do not explicitly repeat this information back to the user unless they bring it up.`;
@@ -101,8 +101,8 @@ const sendMessage = async (req, res) => {
       }))
     ];
 
-    // 4. Call Google AI Studio (Gemini)
-    const aiResponseText = await callGoogleAI(apiMessages);
+    // 4. Call Groq API (Gemma 2)
+    const aiResponseText = await callGroqAI(apiMessages);
 
     // 5. Save AI's response to DB
     const aiMessage = new Message({
