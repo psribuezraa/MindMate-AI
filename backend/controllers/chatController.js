@@ -1,8 +1,9 @@
 const Message = require("../models/Message");
+const Diary = require("../models/Diary");
 const Survey = require("../models/Survey");
 const { summarizeSurveyForAI } = require("./surveyController");
 
-// Helper function to call Groq API (Gemma 2)
+// Helper function to call Groq API (Llama 3.3 70B)
 const callGroqAI = async (messages) => {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
@@ -101,7 +102,7 @@ const sendMessage = async (req, res) => {
       }))
     ];
 
-    // 4. Call Groq API (Gemma 2)
+    // 4. Call Groq API (Llama 3.3 70B)
     const aiResponseText = await callGroqAI(apiMessages);
 
     // 5. Save AI's response to DB
@@ -121,7 +122,94 @@ const sendMessage = async (req, res) => {
   }
 };
 
+/**
+ * @route   GET /api/chat/daily-tasks
+ * @desc    Generate 3 personalized daily wellness tasks using Groq AI
+ * @access  Private
+ */
+const generateDailyTasks = async (req, res) => {
+  try {
+    // 1. Gather context: recent diary entries (last 3 days)
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+    const recentDiaries = await Diary.find({
+      user: req.user._id,
+      createdAt: { $gte: threeDaysAgo },
+    })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select("content mood createdAt");
+
+    // 2. Gather context: survey data
+    const survey = await Survey.findOne({ user: req.user._id });
+    const surveyContext = summarizeSurveyForAI(survey);
+
+    // 3. Build diary context string
+    let diaryContext = "";
+    if (recentDiaries.length > 0) {
+      diaryContext = "Here are the user's recent diary entries:\n";
+      recentDiaries.forEach((entry) => {
+        const date = entry.createdAt.toISOString().slice(0, 10);
+        diaryContext += `- [${date}] Mood: ${entry.mood}. Entry: "${entry.content}"\n`;
+      });
+    } else {
+      diaryContext =
+        "The user has not written any diary entries yet. They are likely new to the app.";
+    }
+
+    // 4. Build the system prompt for task generation
+    const systemPrompt = {
+      role: "system",
+      content: `You are MindMate AI's Daily Wellness Planner. Your job is to suggest exactly 3 small, achievable, and uplifting wellness tasks for the user to do today.
+
+RULES:
+- Each task must be short (under 15 words).
+- Tasks should be practical and doable right now (e.g. drink water, take a walk, write in your journal).
+- If the user has recent diary entries, tailor tasks to their recent mood and concerns.
+- If the user has no diary entries or activity, suggest gentle introductory tasks to help them get started with the app (e.g. "Write your first journal entry", "Try the 5-minute grounding exercise", "Listen to a calming soundscape").
+- Respond ONLY with a valid JSON array of exactly 3 strings. No markdown, no explanation, no code fences.
+- Example response: ["Drink a glass of water", "Take a 10-minute walk outside", "Write down 3 things you are grateful for"]`,
+    };
+
+    const userPrompt = {
+      role: "user",
+      content: `${surveyContext ? `User profile: ${surveyContext}\n\n` : ""}${diaryContext}\n\nGenerate 3 daily wellness tasks for today.`,
+    };
+
+    // 5. Call Groq API
+    const aiResponse = await callGroqAI([systemPrompt, userPrompt]);
+
+    // 6. Parse the JSON array from AI response
+    let tasks;
+    try {
+      // Strip any potential markdown code fences the AI might add
+      const cleaned = aiResponse.replace(/```json\n?|\n?```/g, "").trim();
+      tasks = JSON.parse(cleaned);
+
+      // Validate it's an array of strings
+      if (!Array.isArray(tasks) || tasks.some((t) => typeof t !== "string")) {
+        throw new Error("Invalid format");
+      }
+    } catch (parseErr) {
+      console.error("Failed to parse AI tasks response:", aiResponse);
+      // Fallback tasks if AI response is malformed
+      tasks = [
+        "Take a few deep breaths and relax",
+        "Write down how you're feeling today",
+        "Listen to a calming soundscape for 5 minutes",
+      ];
+    }
+
+    res.json({ tasks });
+  } catch (error) {
+    console.error("Generate daily tasks error:", error.message);
+    res.status(500).json({ message: "Failed to generate daily tasks." });
+  }
+};
+
 module.exports = {
   getChatHistory,
   sendMessage,
+  generateDailyTasks,
 };

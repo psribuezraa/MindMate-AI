@@ -7,6 +7,8 @@ import SoundscapePlayer from '../components/dashboard/SoundscapePlayer';
 import ThoughtShredder from '../components/dashboard/ThoughtShredder';
 import DiaryCard from '../components/dashboard/DiaryCard';
 import LocalSupportCard from '../components/dashboard/LocalSupportCard';
+import GroundingExercise from '../components/dashboard/GroundingExercise';
+import DailyTasksCard from '../components/dashboard/DailyTasksCard';
 
 import { useState } from 'react';
 
@@ -21,9 +23,15 @@ export default function SanctuaryPage() {
   const { user } = useAuth();
   const userName = user?.name ? user.name.split(' ')[0] : 'Guest';
   const [diaryUpdateTrigger, setDiaryUpdateTrigger] = useState(0);
+  const [showGrounding, setShowGrounding] = useState(false);
 
   return (
     <div id="sanctuary-page">
+      {/* Grounding Exercise Modal */}
+      {showGrounding && (
+        <GroundingExercise onClose={() => setShowGrounding(false)} />
+      )}
+
       {/* Search Bar */}
       <div className="search-bar" id="search-bar">
         <Search size={18} />
@@ -54,9 +62,10 @@ export default function SanctuaryPage() {
               icon={<Play size={18} />}
               iconVariant="sage"
               title="5-min Meditation"
-              description="Ground yourself based on your recent activity."
+              description="Ground yourself with the 5-4-3-2-1 sensory technique."
               ctaLabel="BEGIN"
               illustration="🧘"
+              onClick={() => setShowGrounding(true)}
             />
             <GuidedIntentionCard
               icon={<Wind size={18} />}
@@ -69,7 +78,12 @@ export default function SanctuaryPage() {
           </div>
         </section>
 
-        {/* Row 3: Daily Diary (spans 2 columns) */}
+        {/* Row 3: Daily Tasks (spans 2 columns) */}
+        <div style={{ gridColumn: 'span 2' }}>
+          <DailyTasksCard />
+        </div>
+
+        {/* Row 4: Daily Diary (spans 2 columns) */}
         <div style={{ gridColumn: 'span 2' }}>
           <DiaryCard onDiarySaved={() => setDiaryUpdateTrigger(prev => prev + 1)} />
         </div>
