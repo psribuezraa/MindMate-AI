@@ -1,4 +1,4 @@
-import { Search, Play, Wind } from 'lucide-react';
+import { Search, Play } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import EmotionalResonanceChart from '../components/dashboard/EmotionalResonanceChart';
 import BreathingRing from '../components/dashboard/BreathingRing';
@@ -32,11 +32,12 @@ export default function SanctuaryPage() {
         <GroundingExercise onClose={() => setShowGrounding(false)} />
       )}
 
-      {/* Search Bar */}
+      {/* Search Bar - Hidden for MVP
       <div className="search-bar" id="search-bar">
         <Search size={18} />
         <input type="text" placeholder="Find peace…" aria-label="Search" />
       </div>
+      */}
 
       {/* Greeting */}
       <div className="greeting">
@@ -67,6 +68,7 @@ export default function SanctuaryPage() {
               illustration="🧘"
               onClick={() => setShowGrounding(true)}
             />
+            {/* Breathing Bubble - Hidden for MVP
             <GuidedIntentionCard
               icon={<Wind size={18} />}
               iconVariant="rose"
@@ -75,6 +77,7 @@ export default function SanctuaryPage() {
               ctaLabel="START"
               illustration="🫧"
             />
+            */}
           </div>
         </section>
 
