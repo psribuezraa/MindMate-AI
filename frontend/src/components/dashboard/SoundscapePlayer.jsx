@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 import {
   SkipBack,
   Play,
@@ -6,14 +6,39 @@ import {
   SkipForward,
   Heart,
   Mountain,
-} from 'lucide-react';
+} from "lucide-react";
 
 const tracks = [
-  { title: 'Chill Rain', genre: 'Nature', duration: '3:09', src: '/audio/chill-rain.mp3' },
-  { title: 'Ocean Vibes', genre: 'Nature', duration: '3:25', src: '/audio/ocean-vibes.mp3' },
-  { title: 'Midnight Forest', genre: 'Nature', duration: '2:48', src: '/audio/midnight-forest.mp3' },
-  { title: 'Soft Piano', genre: 'Music', duration: '2:11', src: '/audio/relaxing--soft-piano-music.mp3' },
-  { title: 'Handpan', genre: 'Music', duration: '4:00', src: '/audio/handpan-feel-like-nature-trip.mp3' },
+  {
+    title: "Chill Rain",
+    genre: "Nature",
+    duration: "3:09",
+    src: "/audio/chill-rain.mp3",
+  },
+  {
+    title: "Ocean Vibes",
+    genre: "Nature",
+    duration: "3:25",
+    src: "/audio/ocean-vibes.mp3",
+  },
+  {
+    title: "Midnight Forest",
+    genre: "Nature",
+    duration: "2:48",
+    src: "/audio/midnight-forest.mp3",
+  },
+  {
+    title: "Soft Piano",
+    genre: "Music",
+    duration: "2:11",
+    src: "/audio/relaxing--soft-piano-music.mp3",
+  },
+  {
+    title: "Handpan",
+    genre: "Music",
+    duration: "4:00",
+    src: "/audio/handpan-feel-like-nature-trip.mp3",
+  },
 ];
 
 export default function SoundscapePlayer() {
@@ -21,7 +46,7 @@ export default function SoundscapePlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [favorites, setFavorites] = useState(() => {
     try {
-      const stored = localStorage.getItem('soundscape-favorites');
+      const stored = localStorage.getItem("soundscape-favorites");
       return stored ? new Set(JSON.parse(stored)) : new Set();
     } catch {
       return new Set();
@@ -37,7 +62,9 @@ export default function SoundscapePlayer() {
   useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.play().catch(error => console.error("Audio playback failed:", error));
+        audioRef.current
+          .play()
+          .catch((error) => console.error("Audio playback failed:", error));
       } else {
         audioRef.current.pause();
       }
@@ -67,7 +94,7 @@ export default function SoundscapePlayer() {
       } else {
         next.add(currentTrack);
       }
-      localStorage.setItem('soundscape-favorites', JSON.stringify([...next]));
+      localStorage.setItem("soundscape-favorites", JSON.stringify([...next]));
       return next;
     });
   };
@@ -87,9 +114,11 @@ export default function SoundscapePlayer() {
   };
 
   const formatTime = (secs) => {
-    if (!secs || isNaN(secs)) return '0:00';
+    if (!secs || isNaN(secs)) return "0:00";
     const m = Math.floor(secs / 60);
-    const s = Math.floor(secs % 60).toString().padStart(2, '0');
+    const s = Math.floor(secs % 60)
+      .toString()
+      .padStart(2, "0");
     return `${m}:${s}`;
   };
 
@@ -108,6 +137,7 @@ export default function SoundscapePlayer() {
         onLoadedMetadata={handleLoadedMetadata}
         loop={false}
       />
+
       {/* Header */}
       <div className="soundscape-header">
         <div className="soundscape-badge">
@@ -119,7 +149,14 @@ export default function SoundscapePlayer() {
           onClick={toggleFav}
           aria-label="Toggle favorite"
         >
-          <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} style={{ color: isFavorite ? '#e76f51' : 'inherit', transition: 'color 0.2s, fill 0.2s' }} />
+          <Heart
+            size={18}
+            fill={isFavorite ? "currentColor" : "none"}
+            style={{
+              color: isFavorite ? "#e76f51" : "inherit",
+              transition: "color 0.2s, fill 0.2s",
+            }}
+          />
         </button>
       </div>
 
@@ -143,24 +180,34 @@ export default function SoundscapePlayer() {
           value={currentTime}
           onChange={handleSeek}
           aria-label="Seek"
-          style={{ '--progress': `${duration ? (currentTime / duration) * 100 : 0}%` }}
+          style={{
+            "--progress": `${duration ? (currentTime / duration) * 100 : 0}%`,
+          }}
         />
         <span className="soundscape-time">{formatTime(duration)}</span>
       </div>
 
       {/* Controls */}
       <div className="soundscape-controls">
-        <button className="soundscape-btn" onClick={prev} aria-label="Previous track">
+        <button
+          className="soundscape-btn"
+          onClick={prev}
+          aria-label="Previous track"
+        >
           <SkipBack size={18} />
         </button>
         <button
           className="soundscape-btn play"
           onClick={togglePlay}
-          aria-label={isPlaying ? 'Pause' : 'Play'}
+          aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? <Pause size={22} /> : <Play size={22} />}
         </button>
-        <button className="soundscape-btn" onClick={next} aria-label="Next track">
+        <button
+          className="soundscape-btn"
+          onClick={next}
+          aria-label="Next track"
+        >
           <SkipForward size={18} />
         </button>
       </div>

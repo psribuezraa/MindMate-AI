@@ -22,13 +22,13 @@ const navItems = [
   // { to: "/dashboard/soundscapes", label: "Soundscapes", icon: Music },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   return (
-    <aside className="sidebar" id="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`} id="sidebar">
       {/* Brand */}
       <div className="sidebar-brand">
         <div className="sidebar-brand-icon">
@@ -60,6 +60,7 @@ export default function Sidebar() {
               `sidebar-nav-item ${isActive ? "active" : ""}`
             }
             end={item.to === "/dashboard"}
+            onClick={onClose}
           >
             <item.icon size={20} />
             <span>{item.label}</span>

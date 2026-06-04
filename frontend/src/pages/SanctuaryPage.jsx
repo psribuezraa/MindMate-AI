@@ -56,7 +56,7 @@ export default function SanctuaryPage() {
         </div>
 
         {/* Row 2: Guided Intentions (spans 2 columns under chart+pace) */}
-        <section className="guided-intentions" id="guided-intentions" style={{ gridColumn: 'span 2' }}>
+        <section className="guided-intentions dashboard-span-2" id="guided-intentions">
           <h3 className="guided-intentions-title">Guided Intentions</h3>
           <div className="guided-intentions-grid">
             <GuidedIntentionCard
@@ -82,17 +82,17 @@ export default function SanctuaryPage() {
         </section>
 
         {/* Row 3: Daily Tasks (spans 2 columns) */}
-        <div style={{ gridColumn: 'span 2' }}>
+        <div className="dashboard-span-2">
           <DailyTasksCard />
         </div>
 
         {/* Row 4: Daily Diary (spans 2 columns) */}
-        <div style={{ gridColumn: 'span 2' }}>
+        <div className="dashboard-span-2">
           <DiaryCard onDiarySaved={() => setDiaryUpdateTrigger(prev => prev + 1)} />
         </div>
 
         {/* Row 4: Thought Shredder (spans 2 columns) */}
-        <div style={{ gridColumn: 'span 2' }}>
+        <div className="dashboard-span-2">
           <ThoughtShredder />
         </div>
       </div>
