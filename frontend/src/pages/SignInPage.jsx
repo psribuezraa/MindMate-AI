@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -46,6 +46,11 @@ export default function SignInPage() {
 
   return (
     <div className="auth-container">
+      <Link to="/" className="back-to-home-btn">
+        <ArrowLeft size={18} />
+        <span>Back to Home</span>
+      </Link>
+
       <div className="auth-card">
         <div className="auth-header">
           <h1 className="auth-title">Sign In</h1>

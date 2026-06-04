@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -14,6 +15,11 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="auth-container">
+      <Link to="/" className="back-to-home-btn">
+        <ArrowLeft size={18} />
+        <span>Back to Home</span>
+      </Link>
+
       <div className="auth-card">
         <div className="auth-header">
           <h1 className="auth-title">Reset Password</h1>
